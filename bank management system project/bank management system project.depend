@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1748072964 source:c:\users\ashok\onedrive\desktop\c tutporial\bank management system project\main.cpp
+	<bits\stdc++.h>
+	<conio.h>
+	<Windows.h>
+
