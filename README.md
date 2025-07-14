@@ -29,7 +29,7 @@ This system allows users to:
 - PIN verification
 - Withdraw cash
 - Check available balance
-- 
+  
 
 ---
 
