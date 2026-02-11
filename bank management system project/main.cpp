@@ -61,14 +61,8 @@ using namespace std;
              pin+=ch;
              cout<<"*";
          }
-         cout<<"\n\n\t Password(enter 5 -digit number) : ";
-          for(int i=1;i<=5;i++)
-         {
-             ch=_getch();
-             pass +=ch;
-             cout<<"*";
-         }
-         if(email== "ashokpen2004@gmail.com"&&pin=="20449"&&pass=="ashok")
+
+         if(email== "ashokpen2004@gmail.com"&&pin=="20449")
         {
          bank_management();
         }else
@@ -104,7 +98,15 @@ using namespace std;
             cout<<"\n\n12. Go back";
 
             cout<<" \n enter your choice:";
-            cin>>choice;
+            if (!(cin >> choice))
+           {
+            cin.clear(); // clear error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clear buffer
+            cout << "\n\nInvalid input! Please enter numbers only.";
+            _getch();
+            goto p;
+          }
+
             switch(choice)
             {
             case 1:
@@ -162,7 +164,15 @@ using namespace std;
             cout<<"\n\n 3. Account Details";
             cout<<"\n\n 4. Go Back";
             cout<<" \n enter your choice:";
-            cin>>choice;
+            if (!(cin >> choice))
+            {
+            cin.clear(); // clear error flag
+            cin.ignore(numeric_limits<streamsize>::max(), '\n'); // clear buffer
+            cout << "\n\nInvalid input! Please enter numbers only.";
+            _getch();
+            goto p;
+           }
+
             switch(choice)
             {
             case 1:
@@ -197,23 +207,150 @@ using namespace std;
      string p;
      float b;
      string n,f,pa,a,ph,i;
-     cout<<"add new user";
-     cout<<"\n\n user id: ";
-     cin>>id;
-     cin.ignore();
+     cout << "add new user";
+
+bool idExists;
+int idChoice;
+
+do
+{
+    idExists = false;
+
+    cout << "\n\n User ID: ";
+    cin >> id;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    file.open("bank.txt", ios::in);
+    if (file)
+    {
+        file >> i >> n >> f >> a >> p >> pa >> ph >> b;
+        while (!file.eof())
+        {
+            if (i == id)
+            {
+                idExists = true;
+                break;
+            }
+            file >> i >> n >> f >> a >> p >> pa >> ph >> b;
+        }
+        file.close();
+    }
+
+   if (idExists)
+{
+    cout << "\n\n \a User ID already exists!";
+
+    while (true)
+    {
+        cout << "\n Enter 1 to try again";
+        cout << "\n Enter 0 to go back";
+        cout << "\n Choice: ";
+        cin >> idChoice;
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+        if (idChoice == 1)
+        {
+            break;   // retry entering user ID
+        }
+        else if (idChoice == 0)
+        {
+            menu();
+            return;
+        }
+        else
+
+            cout << "\n  Invalid choice! Please enter 1 or 0.\n";
+        }
+    }
+} while (idExists);
+
+
+
+
       cout<<"\n\n  name: ";
      getline(cin,name);
       cout<<"\n\n Father name: ";
      getline(cin,fname);
       cout<<"\n\n Address: ";
      getline(cin,address);
-      cout<<"\n\n pin code(5 digit): ";
-     getline(cin,pin);
+      int choice;
+bool showError = true;
 
-      cout<<"\n\n password(5 digit): ";
-     getline(cin,pass);
-      cout<<"\n\n phone no: ";
-     cin>>phone;
+while (true)
+{
+    cout << "\n\n Pin code (5 digits): ";
+    getline(cin, pin);
+
+    cout << "\n\n Password (5 digits): ";
+    getline(cin, pass);
+
+    bool validPin  = (pin.length() == 5) &&
+                     all_of(pin.begin(), pin.end(), ::isdigit);
+
+    bool validPass = (pass.length() == 5) &&
+                     all_of(pass.begin(), pass.end(), ::isdigit);
+
+    if (validPin && validPass)
+    {
+        break;  // correct input → continue program
+    }
+
+    if (showError)
+    {
+        cout << "\n\n  Invalid input!";
+        cout << "\n Password and PIN must be exactly 5 digits";
+        cout << "\n and contain numbers only.\n";
+        showError = false;
+    }
+
+    cout << "\n Enter 1 to try again";
+    cout << "\n Enter 0 to go back";
+    cout << "\n Choice: ";
+    cin >> choice;
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    if (choice == 0)
+    {
+        menu();
+        return;
+    }
+    // if choice == 1 → loop continues
+}
+
+
+    cout << "\n\n Phone No (10 digits): ";
+    phone = "";
+    char ch;
+
+while (true)
+{
+    ch = _getch();
+
+    // Accept digits
+    if (ch >= '0' && ch <= '9' && phone.length() < 10)
+    {
+        phone += ch;
+        cout << ch;
+    }
+    // Backspace handling
+    else if (ch == 8 && !phone.empty())
+    {
+        phone.pop_back();
+        cout << "\b \b";
+    }
+    // ENTER key → confirm only if exactly 10 digits
+    else if (ch == 13)   // Enter key
+    {
+        if (phone.length() == 10)
+            break;   // accept phone number
+        else
+        {
+            // optional beep or message
+            Beep(750, 100);
+        }
+    }
+}
+
      cout<<"\n\n Current balance: ";
      cin>>balance;
 
@@ -341,7 +478,7 @@ using namespace std;
      file.open("bank.txt",ios::in);
      if(!file)
      {
-         cout<<"\n\nfile opening error...";
+         cout<<"\n\n file opening error...";
      }
      else
      {
@@ -359,7 +496,7 @@ using namespace std;
                  {
                       balance -=with;
                 file1<<" "<<id<<" "<<name<<" "<<fname<<" "<<address<<" "<<pin<<" "<<pass<<" "<<phone<<" "<<balance<<"\n";
-                 cout<<"\n\n\n\t\t your amount "<<with<<"successfully withdraw...";
+                 cout<<"\n\n\n\t\t your amount "<<with<<" successfully withdraw...";
 
                  }
                  else
@@ -712,7 +849,7 @@ void bank::show_payments()
     file.open("bill.txt",ios::in);
     if(!file)
      {
-         cout<<"\n\nfile opening error...";
+         cout<<"\n\n There are no bills to show here/a...";
      }
      else
      {
@@ -916,14 +1053,7 @@ void bank::check_account()
          if(found==0)
          cout<<"user id can't found....";
 
-
-
-
 }
-
-
-
-
 
  int main()
 {
